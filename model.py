@@ -1,5 +1,3 @@
-# scavatu_model.py
-
 import mesa
 import numpy as np
 import pandas as pd
@@ -16,16 +14,16 @@ class SCAVATUModel(mesa.Model):
                  soil_infil_thresh_array: np.ndarray,
                  soil_loss_thresh_array: np.ndarray,
                  initial_soil_water_content_array: np.ndarray,
-                 pTol: float,  # Lower outflow threshold for erosion
-                 pTou: float,  # Upper outflow threshold for erosion
-                 pEmax: float, # Max erosion per cell per step
-                 pTr: float,   # Run-up normalization threshold for erosion
-                 pTvd: float,  # Vegetation density normalization threshold for erosion
-                 pTrm: float,  # Run-up threshold of motion (transport/deposition)
-                 ptc: float,   # Transport capacity (as fraction of water depth, e.g., 0.2 for 20%)
-                 pf: float,    # Head loss due to friction
-                 pRr: float,   # Water flow relaxation rate (0 < pRr <= 1)
-                 ptmax: float, # Max sediment transport *out* per cell per step
+                 pTol: float,
+                 pTou: float,
+                 pEmax: float,
+                 pTr: float,
+                 pTvd: float,
+                 pTrm: float,
+                 ptc: float,
+                 pf: float,
+                 pRr: float,
+                 ptmax: float,
                  rainfall_per_step: list[float] = None
                  ):
         super().__init__()
