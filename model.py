@@ -163,7 +163,7 @@ if __name__ == '__main__':
         "pRr": 0.09,
         "ptmax": 25e-1
     }
-    NUM_STEPS = 50
+    NUM_STEPS = 100
     # rainfall_scenario = pluviogram(NUM_STEPS)
     rainfall_scenario = [1.5] * NUM_STEPS*2
     
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         model_width=WIDTH,
         model_height=HEIGHT,
         variable_name="Altitude",
-        output_filename="Altitude_1.gif",
+        output_filename="Altitude_3.gif",
         fps=15,
         cmap="gray_r",
         title_prefix=""
