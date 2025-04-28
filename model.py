@@ -75,7 +75,8 @@ class SCAVATUModel(mesa.Model):
                 "DepositedMaterial": "deposited_material",
                 "SedimentInWater": "sediment_in_water",
                 "SoilWaterContent": "soil_water_content",
-                "Pos" : "pos"
+                "Pos": "pos",
+                "Altitude": "altitude"
             }
             # rajouter des trackers pour l'érosion totale et les sédiments
         )
@@ -139,29 +140,32 @@ class SCAVATUModel(mesa.Model):
 
 
 if __name__ == '__main__':
-    WIDTH = 100
-    HEIGHT = 100
-    dummy_dem = generate_dummy_dem(WIDTH, HEIGHT)
-    dummy_veg = np.random.rand(HEIGHT, WIDTH) * 0.3
-    dummy_soil_cap = np.full((HEIGHT, WIDTH), 50.0)
-    dummy_soil_infil = np.full((HEIGHT, WIDTH), 5.0)
-    dummy_soil_loss = np.full((HEIGHT, WIDTH), 1.0)
-    dummy_soil_wc = np.full((HEIGHT, WIDTH), 10.0)
+    # WIDTH = 100
+    # HEIGHT = 100
+    alt = load_dem_from_tif("MNTprocess/MNTs/srtm_reprojected_epsg4269.tif")
+    HEIGHT, WIDTH = alt.shape
+    dummy_dem = alt
+    dummy_veg = np.random.rand(HEIGHT, WIDTH) * 0.5
+    dummy_soil_cap = np.full((HEIGHT, WIDTH), 3.1)
+    dummy_soil_infil = np.full((HEIGHT, WIDTH), 3.0)
+    dummy_soil_loss = np.full((HEIGHT, WIDTH), 1.1)
+    dummy_soil_wc = np.full((HEIGHT, WIDTH), 5)
 
     params = {
         "pTol": 0.01,
         "pTou": 0.5,
-        "pEmax": 25e-6,
+        "pEmax": 25e-1,
         "pTr": 0.01,
         "pTvd": 0.5,
         "pTrm": 0.005,
         "ptc": 0.2,
         "pf": 0.5,
         "pRr": 0.09,
-        "ptmax": 25e-6
+        "ptmax": 25e-1
     }
-    NUM_STEPS = 100
-    rainfall_scenario = pluviogram(NUM_STEPS)
+    NUM_STEPS = 50
+    # rainfall_scenario = pluviogram(NUM_STEPS)
+    rainfall_scenario = [1.5] * NUM_STEPS*2
     
     model = SCAVATUModel(
         width=WIDTH,
@@ -188,14 +192,15 @@ if __name__ == '__main__':
         agent_data_df=agent_data,
         model_width=WIDTH,
         model_height=HEIGHT,
-        variable_name="WaterDepth",
-        output_filename="WaterDepth.gif",
-        fps=24,
+        variable_name="Altitude",
+        output_filename="Altitude_1.gif",
+        fps=15,
         cmap="gray_r",
         title_prefix=""
     )
     # s = [5, 21, 51, 71, 91]
     # for i in s:
     #     model.plot_spatial_variable(agent_data, i, "WaterDepth")
-    # model.plot_temporal_average(agent_data, "DepositedMaterial")
+    # model.plot_temporal_average(agent_data, "WaterDepth")
+    # model.plot_temporal_average(agent_data, "Altitude")
     # plt.show()

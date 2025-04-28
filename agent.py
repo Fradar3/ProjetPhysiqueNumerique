@@ -232,6 +232,7 @@ class TerrainAgent(Agent):
         self.sediment_inflow_from = {}
         self._current_step_eroded_material = 0.0
         self.next_state = {}
+        self.next_state['altitude'] = self.altitude
         delta_wd_infiltration, delta_wc = self.calculate_infiltration()
         next_soil_water_content = max(0.0, self.soil_water_content + delta_wc)
         self.next_state['soil_water_content'] = next_soil_water_content
@@ -251,6 +252,12 @@ class TerrainAgent(Agent):
              total_incoming_sediment
         )
         self.next_state['deposited_material'] = next_deposited_material
+        net_mass_change = (self.next_state["deposited_material"]-self.deposited_material-self._current_step_eroded_material)
+        delta_altitude = net_mass_change / 1.3 # C'est la densité du sol en kg/m³
+        next_altitude = self.altitude + delta_altitude
+        self.next_state["altitude"] = next_altitude
+        
+        
         sediment_outflow_to, total_sediment_outflow = self.calculate_sediment_outflows(
             sediment_potential_for_outflow,
             water_outflow_to
@@ -265,5 +272,6 @@ class TerrainAgent(Agent):
         self.sediment_in_water = self.next_state.get('sediment_in_water', self.sediment_in_water)
         self.deposited_material = self.next_state.get('deposited_material', self.deposited_material)
         self.soil_water_content = self.next_state.get('soil_water_content', self.soil_water_content)
+        self.altitude = self.next_state.get('altitude', self.altitude)
         self.next_state = {}
         self._current_step_eroded_material = 0.0
