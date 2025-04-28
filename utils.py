@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import imageio
+import rasterio
 
 def generate_dummy_dem(width: int, height: int) -> np.ndarray:
     dummy_dem = np.zeros((height, width))
