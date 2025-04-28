@@ -185,4 +185,7 @@ def create_spatial_gif(
 
     plt.ion() # Turn interactive plotting back on
     
-    
+
+def load_dem_from_tif(tif_filepath: str) -> np.ndarray:
+    with rasterio.open(tif_filepath) as dataset:
+        return dataset.read(1) # En assumant que l'altitude se trouve dans la première bande
