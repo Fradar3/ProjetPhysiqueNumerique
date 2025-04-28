@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from agent import TerrainAgent
+from utils import generate_dummy_dem
 
 class SCAVATUModel(mesa.Model):
     def __init__(self,
@@ -62,6 +63,7 @@ class SCAVATUModel(mesa.Model):
                     vegetation_density=vegetation_density,
                     infiltration_params=infiltration_params
                 )
+                self.grid.place_agent(agent, pos)
                 agent_id_counter += 1
         for agent in self.agents:
             agent.cache_neighbors()
@@ -139,29 +141,24 @@ class SCAVATUModel(mesa.Model):
 if __name__ == '__main__':
     WIDTH = 50
     HEIGHT = 50
-    dummy_dem = np.random.rand(HEIGHT, WIDTH) * 100 + 100
+    dummy_dem = generate_dummy_dem(WIDTH, HEIGHT)
     dummy_veg = np.random.rand(HEIGHT, WIDTH) * 0.8
     dummy_soil_cap = np.full((HEIGHT, WIDTH), 50.0)
     dummy_soil_infil = np.full((HEIGHT, WIDTH), 5.0)
     dummy_soil_loss = np.full((HEIGHT, WIDTH), 1.0)
     dummy_soil_wc = np.full((HEIGHT, WIDTH), 10.0)
 
-    for y in range(HEIGHT):
-         for x in range(WIDTH):
-              dummy_dem[y, x] = 100 + x + (HEIGHT-1-y) * 0.5 + np.sin(x/5) * 5 + np.sin(y/5) * 5
-              if 20 < x < 30 and 20 < y < 30:
-                   dummy_dem[y, x] -= 20 # A little basin
     params = {
-        "pTol": 0.001,
-        "pTou": 0.01,
-        "pEmax": 0.1,
+        "pTol": 0.01,
+        "pTou": 0.5,
+        "pEmax": 25e-6,
         "pTr": 0.01,
         "pTvd": 0.5,
         "pTrm": 0.005,
-        "ptc": 0.5,
-        "pf": 0.001,
-        "pRr": 0.1,
-        "ptmax": 0.5
+        "ptc": 0.2,
+        "pf": 0.5,
+        "pRr": 0.09,
+        "ptmax": 25e-6
     }
 
     rainfall_scenario = [0.1] * 10 + [0.05] * 10 + [0.0] * 30 # 10 steps light rain, 10 steps lighter rain, then dry
@@ -188,6 +185,7 @@ if __name__ == '__main__':
 
     print("\nSimulation complete.")
     agent_data = model.datacollector.get_agent_vars_dataframe()
+    plt.imshow(dummy_dem)
     model.plot_spatial_variable(agent_data, NUM_STEPS - 1, "DepositedMaterial")
     model.plot_temporal_average(agent_data, "WaterDepth")
     model.plot_temporal_average(agent_data, "DepositedMaterial")
