@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def generate_dummy_dem(width: int, height: int) -> np.ndarray:
     dummy_dem = np.zeros((height, width))
@@ -7,13 +8,13 @@ def generate_dummy_dem(width: int, height: int) -> np.ndarray:
     for y in range(height):
         for x in range(width):
             # Basic slope (eastward and downward)
-            base_height = 100 + x * 0.8 + (height - 1 - y) * 0.5
+            base_height = 120 + x * 0.8 + (height - 1 - y) * 0.5
 
             # Add small undulations (hills)
             hills = np.sin(x / 5) * 5 + np.sin(y / 7) * 5
 
             # Larger landscape-scale hills
-            large_hills = np.sin(x / 15) * 10 + np.sin(y / 20) * 10
+            large_hills = np.sin(x / 15) * 15 + np.sin(y / 20) * 15
 
             # Random small noise
             noise = np.random.normal(0, 0.5)
@@ -37,6 +38,12 @@ def generate_dummy_dem(width: int, height: int) -> np.ndarray:
         if width // 3 <= i <= 2 * width // 3:
             ridge_y = height // 3
             if 0 <= ridge_y < height:
-                dummy_dem[ridge_y, i] += 20
+                dummy_dem[ridge_y, i] -= 50
+                dummy_dem[ridge_y+1, i] -= 50
+                dummy_dem[ridge_y-1, i] -= 50
 
     return dummy_dem
+
+def pluviogram(steps):
+    rain = [0.1] * 20 + [0.2]*10 + [0.4]*10 + [0.5]*10 + [0.2]*30 + [0.4]*20
+    return rain

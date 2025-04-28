@@ -49,7 +49,6 @@ class TerrainAgent(Agent):
         delta_wc = infiltration - water_loss
 
         return delta_wd_infiltration, delta_wc
-        # return 0.0, 0.0
 
     def calculate_erosion(self, total_outflow):
         # T2
@@ -134,7 +133,6 @@ class TerrainAgent(Agent):
     def calculate_water_outflows(self, delta_wd_infiltration):
         # I1 pour l'eau
         delta_H_map = self.minimize_H()
-        # print(delta_H_map)
         wd_after_rain = self.water_depth + self.model.get_rain_at_pos(self.pos)
         wd_available_for_outflow = wd_after_rain + delta_wd_infiltration
         wd_available_for_outflow = max(0.0, wd_available_for_outflow)
@@ -260,8 +258,6 @@ class TerrainAgent(Agent):
         self.sediment_outflow_to = sediment_outflow_to
         self.next_state['sediment_in_water'] = sediment_potential_for_outflow - total_sediment_outflow
         self.next_state['sediment_in_water'] = max(0.0, self.next_state['sediment_in_water'])
-        # print(self.deposited_material)
-        print(total_water_outflow)
 
     def advance(self):
         self.water_depth = self.next_state.get('water_depth', self.water_depth)

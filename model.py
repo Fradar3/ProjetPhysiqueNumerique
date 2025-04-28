@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from agent import TerrainAgent
-from utils import generate_dummy_dem
+from utils import *
 
 class SCAVATUModel(mesa.Model):
     def __init__(self,
@@ -114,7 +114,7 @@ class SCAVATUModel(mesa.Model):
             grid_data[y, x] = row[variable_name]
 
         plt.figure(figsize=(6, 6))
-        plt.imshow(grid_data, origin='lower', cmap='viridis')
+        plt.imshow(grid_data, origin='lower', cmap='gray_r')
         plt.colorbar(label=variable_name)
         plt.title(f"{variable_name} at Step {step}")
         plt.xlabel("X Coordinate")
@@ -139,10 +139,10 @@ class SCAVATUModel(mesa.Model):
 
 
 if __name__ == '__main__':
-    WIDTH = 50
-    HEIGHT = 50
+    WIDTH = 100
+    HEIGHT = 100
     dummy_dem = generate_dummy_dem(WIDTH, HEIGHT)
-    dummy_veg = np.random.rand(HEIGHT, WIDTH) * 0.8
+    dummy_veg = np.random.rand(HEIGHT, WIDTH) * 0.3
     dummy_soil_cap = np.full((HEIGHT, WIDTH), 50.0)
     dummy_soil_infil = np.full((HEIGHT, WIDTH), 5.0)
     dummy_soil_loss = np.full((HEIGHT, WIDTH), 1.0)
@@ -161,8 +161,10 @@ if __name__ == '__main__':
         "ptmax": 25e-6
     }
 
-    rainfall_scenario = [0.1] * 10 + [0.05] * 10 + [0.0] * 30 # 10 steps light rain, 10 steps lighter rain, then dry
-
+    # rainfall_scenario = [0.1] * 10 + [0.05] * 10 + [0.0] * 30 # 10 steps light rain, 10 steps lighter rain, then dry
+    NUM_STEPS = 50
+    rainfall_scenario = pluviogram(NUM_STEPS)
+    
     model = SCAVATUModel(
         width=WIDTH,
         height=HEIGHT,
@@ -176,7 +178,6 @@ if __name__ == '__main__':
         **params
     )
 
-    NUM_STEPS = 50
     print(f"Running SCAVATU model for {NUM_STEPS} steps...")
     for i in range(NUM_STEPS):
         model.step()
@@ -185,10 +186,10 @@ if __name__ == '__main__':
 
     print("\nSimulation complete.")
     agent_data = model.datacollector.get_agent_vars_dataframe()
-    plt.imshow(dummy_dem)
-    model.plot_spatial_variable(agent_data, NUM_STEPS - 1, "DepositedMaterial")
-    model.plot_temporal_average(agent_data, "WaterDepth")
+    s = [5, 21, 51, 71, 91]
+    for i in s:
+        model.plot_spatial_variable(agent_data, i, "WaterDepth")
+    # model.plot_temporal_average(agent_data, "WaterDepth")
     model.plot_temporal_average(agent_data, "DepositedMaterial")
-    model.plot_temporal_average(agent_data, "SedimentInWater")
-    model.plot_temporal_average(agent_data, "SoilWaterContent")
+    # model.plot_temporal_average(agent_data, "SedimentInWater")
     plt.show()
