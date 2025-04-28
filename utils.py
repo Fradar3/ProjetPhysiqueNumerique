@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import rasterio
 
 def generate_dummy_dem(width: int, height: int) -> np.ndarray:
     dummy_dem = np.zeros((height, width))
@@ -47,3 +48,7 @@ def generate_dummy_dem(width: int, height: int) -> np.ndarray:
 def pluviogram(steps):
     rain = [0.1] * 20 + [0.2]*10 + [0.4]*10 + [0.5]*10 + [0.2]*30 + [0.4]*20
     return rain
+
+def load_dem_from_tif(tif_filepath: str) -> np.ndarray:
+    with rasterio.open(tif_filepath) as dataset:
+        return dataset.read(1) # En assumant que l'altitude se trouve dans la première bande
