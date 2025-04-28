@@ -163,7 +163,7 @@ if __name__ == '__main__':
         "pRr": 0.09,
         "ptmax": 25e-1
     }
-    NUM_STEPS = 50
+    NUM_STEPS = 200
     # rainfall_scenario = pluviogram(NUM_STEPS)
     rainfall_scenario = [1.5] * NUM_STEPS*2
     
@@ -203,23 +203,24 @@ if __name__ == '__main__':
         difference_grid[y, x] = difference
 
     plt.figure(figsize=(8, 6))
-    plt.imshow(difference_grid, origin='lower', cmap='coolwarm')
-    plt.colorbar(label="Δ Altitude (Step 50 - Step 0)")
-    plt.title("Changement d'Altitude entre Step 0 et Step 50")
+    plt.imshow(difference_grid, origin='lower', cmap='coolwarm_r')
+    plt.colorbar(label=f"Δ Altitude (Step {NUM_STEPS} - Step 0)")
+    plt.title(f"Changement d'Altitude entre Step 0 et Step {NUM_STEPS}")
     plt.xlabel("X Coordinate")
     plt.ylabel("Y Coordinate")
     plt.gca().invert_yaxis()
     plt.show()
-    create_spatial_gif(
-        agent_data_df=agent_data,
-        model_width=WIDTH,
-        model_height=HEIGHT,
-        variable_name="Altitude",
-        output_filename="Altitude_1.gif",
-        fps=15,
-        cmap="gray_r",
-        title_prefix=""
-    )
+
+    # create_spatial_gif(
+    #     agent_data_df=agent_data,
+    #     model_width=WIDTH,
+    #     model_height=HEIGHT,
+    #     variable_name="Altitude",
+    #     output_filename="Altitude_1.gif",
+    #     fps=15,
+    #     cmap="gray_r",
+    #     title_prefix=""
+    # )
     # s = [5, 21, 51, 71, 91]
     # for i in s:
     #     model.plot_spatial_variable(agent_data, i, "WaterDepth")
