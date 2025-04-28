@@ -189,3 +189,7 @@ def create_spatial_gif(
 def load_dem_from_tif(tif_filepath: str) -> np.ndarray:
     with rasterio.open(tif_filepath) as dataset:
         return dataset.read(1) # En assumant que l'altitude se trouve dans la première bande
+    
+# alt = load_dem_from_tif("MNTprocess/MNTs/srtm_reprojected_epsg4269.tif")
+# plt.imshow(alt, origin="lower")
+# plt.show()
