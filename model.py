@@ -160,9 +160,7 @@ if __name__ == '__main__':
         "pRr": 0.09,
         "ptmax": 25e-6
     }
-
-    # rainfall_scenario = [0.1] * 10 + [0.05] * 10 + [0.0] * 30 # 10 steps light rain, 10 steps lighter rain, then dry
-    NUM_STEPS = 50
+    NUM_STEPS = 100
     rainfall_scenario = pluviogram(NUM_STEPS)
     
     model = SCAVATUModel(
@@ -186,10 +184,18 @@ if __name__ == '__main__':
 
     print("\nSimulation complete.")
     agent_data = model.datacollector.get_agent_vars_dataframe()
-    s = [5, 21, 51, 71, 91]
-    for i in s:
-        model.plot_spatial_variable(agent_data, i, "WaterDepth")
-    # model.plot_temporal_average(agent_data, "WaterDepth")
-    model.plot_temporal_average(agent_data, "DepositedMaterial")
-    # model.plot_temporal_average(agent_data, "SedimentInWater")
-    plt.show()
+    create_spatial_gif(
+        agent_data_df=agent_data,
+        model_width=WIDTH,
+        model_height=HEIGHT,
+        variable_name="WaterDepth",
+        output_filename="WaterDepth.gif",
+        fps=24,
+        cmap="gray_r",
+        title_prefix=""
+    )
+    # s = [5, 21, 51, 71, 91]
+    # for i in s:
+    #     model.plot_spatial_variable(agent_data, i, "WaterDepth")
+    # model.plot_temporal_average(agent_data, "DepositedMaterial")
+    # plt.show()
