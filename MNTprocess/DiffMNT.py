@@ -147,8 +147,8 @@ def plot_difference_map(diff_map, title="Différence d'Altitude (T2 - T1)", cmap
 # --- Exemple d'Utilisation ---
 if __name__ == "__main__":
     # --- !!! METTRE ICI LES CHEMINS VERS VOS FICHIERS MNT !!! ---
-    mnt_t1_file = "C:\\Users\\franc\\Documents\\FrkWork\\rasters_SRTMGL1 (1)\\srtm_reprojected_epsg4269.tif"  # Exemple: 'data/alps_srtm_2000.tif'
-    mnt_t2_file = "C:\\Users\\franc\\Documents\\FrkWork\\rasters_USGS30m\\output_USGS30m.tif"   # Exemple: 'data/alps_copdem_2015.tif'
+    mnt_t1_file = "C:\\Users\\franc\\Downloads\\Ile1\\Ile1_epsg4269.tif"  # Exemple: 'data/alps_srtm_2000.tif'
+    mnt_t2_file = "C:\\Users\\franc\\Downloads\\Ile2\\output_USGS30m.tif"   # Exemple: 'data/alps_copdem_2015.tif'
 
     # --- Chemin optionnel pour sauvegarder la carte de différence ---
     output_file = "resultats/difference_mnt.tif" # Mettre None pour ne pas sauvegarder

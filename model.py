@@ -163,7 +163,7 @@ if __name__ == '__main__':
         "pRr": 0.09,
         "ptmax": 25e-1
     }
-    NUM_STEPS = 100
+    NUM_STEPS = 200
     # rainfall_scenario = pluviogram(NUM_STEPS)
     rainfall_scenario = [1.5] * NUM_STEPS*2
     
@@ -188,16 +188,77 @@ if __name__ == '__main__':
 
     print("\nSimulation complete.")
     agent_data = model.datacollector.get_agent_vars_dataframe()
-    create_spatial_gif(
-        agent_data_df=agent_data,
-        model_width=WIDTH,
-        model_height=HEIGHT,
-        variable_name="Altitude",
-        output_filename="Altitude_3.gif",
-        fps=15,
-        cmap="gray_r",
-        title_prefix=""
-    )
+
+    variable_name = "Altitude"
+    step0 = agent_data.xs(0, level="Step")
+    step50 = agent_data.xs(NUM_STEPS-1, level="Step")
+
+    difference_grid = np.zeros((model.height, model.width))
+
+    for index, row in step0.iterrows():
+        x, y = row["Pos"]
+        altitude_step0 = row[variable_name]
+        altitude_step50 = step50.loc[index][variable_name]
+        difference = altitude_step50 - altitude_step0
+        difference_grid[y, x] = difference
+
+    last_step = NUM_STEPS - 1
+
+    step0 = agent_data.xs(0, level="Step")
+    step_last = agent_data.xs(last_step, level="Step")
+
+    # --- Step 0 Altitude ---
+    altitude_grid_step0 = np.zeros((model.height, model.width))
+    for index, row in step0.iterrows():
+        x, y = row["Pos"]
+        altitude_grid_step0[y, x] = row["Altitude"]
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(altitude_grid_step0, origin='lower', cmap='terrain')
+    plt.colorbar(label="Altitude (m)")
+    plt.title(f"Altitude au Step 0")
+    plt.xlabel("X Coordinate")
+    plt.ylabel("Y Coordinate")
+    plt.gca().invert_yaxis()
+    plt.show()
+
+    # --- Step final Altitude (step NUM_STEPS - 1) ---
+    altitude_grid_step_last = np.zeros((model.height, model.width))
+    for index, row in step_last.iterrows():
+        x, y = row["Pos"]
+        altitude_grid_step_last[y, x] = row["Altitude"]
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(altitude_grid_step_last, origin='lower', cmap='terrain')
+    plt.colorbar(label="Altitude (m)")
+    plt.title(f"Altitude au Step {last_step}")
+    plt.xlabel("X Coordinate")
+    plt.ylabel("Y Coordinate")
+    plt.gca().invert_yaxis()
+    plt.show()
+
+    # --- Différence d'altitude ---
+    difference_grid = altitude_grid_step_last - altitude_grid_step0
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(difference_grid, origin='lower', cmap='coolwarm_r')
+    plt.colorbar(label=f"Δ Altitude (Step {last_step} - Step 0)")
+    plt.title(f"Changement d'Altitude entre Step 0 et Step {last_step}")
+    plt.xlabel("X Coordinate")
+    plt.ylabel("Y Coordinate")
+    plt.gca().invert_yaxis()
+    plt.show()
+
+    # create_spatial_gif(
+    #     agent_data_df=agent_data,
+    #     model_width=WIDTH,
+    #     model_height=HEIGHT,
+    #     variable_name="Altitude",
+    #     output_filename="Altitude_1.gif",
+    #     fps=15,
+    #     cmap="gray_r",
+    #     title_prefix=""
+    # )
     # s = [5, 21, 51, 71, 91]
     # for i in s:
     #     model.plot_spatial_variable(agent_data, i, "WaterDepth")
