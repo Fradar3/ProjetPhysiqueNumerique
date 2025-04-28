@@ -188,6 +188,28 @@ if __name__ == '__main__':
 
     print("\nSimulation complete.")
     agent_data = model.datacollector.get_agent_vars_dataframe()
+
+    variable_name = "Altitude"
+    step0 = agent_data.xs(0, level="Step")
+    step50 = agent_data.xs(NUM_STEPS-1, level="Step")
+
+    difference_grid = np.zeros((model.height, model.width))
+
+    for index, row in step0.iterrows():
+        x, y = row["Pos"]
+        altitude_step0 = row[variable_name]
+        altitude_step50 = step50.loc[index][variable_name]
+        difference = altitude_step50 - altitude_step0
+        difference_grid[y, x] = difference
+
+    plt.figure(figsize=(8, 6))
+    plt.imshow(difference_grid, origin='lower', cmap='coolwarm')
+    plt.colorbar(label="Δ Altitude (Step 50 - Step 0)")
+    plt.title("Changement d'Altitude entre Step 0 et Step 50")
+    plt.xlabel("X Coordinate")
+    plt.ylabel("Y Coordinate")
+    plt.gca().invert_yaxis()
+    plt.show()
     create_spatial_gif(
         agent_data_df=agent_data,
         model_width=WIDTH,
