@@ -142,7 +142,8 @@ class SCAVATUModel(mesa.Model):
 if __name__ == '__main__':
     # WIDTH = 100
     # HEIGHT = 100
-    alt = load_dem_from_tif("MNTprocess/MNTs/srtm_reprojected_epsg4269.tif")
+    # alt = load_dem_from_tif("MNTprocess/MNTs/srtm_reprojected_epsg4269.tif")
+    alt = load_dem_from_tif(r"C:\Users\franc\Downloads\rasters_USGS30m\Vallee.tif")
     HEIGHT, WIDTH = alt.shape
     dummy_dem = alt
     dummy_veg = np.random.rand(HEIGHT, WIDTH) * 0.5
@@ -152,7 +153,7 @@ if __name__ == '__main__':
     dummy_soil_wc = np.full((HEIGHT, WIDTH), 5)
 
     params = {
-        "pTol": 0.01,
+        "pTol": 0.001,
         "pTou": 0.5,
         "pEmax": 25e-1,
         "pTr": 0.01,
@@ -163,9 +164,9 @@ if __name__ == '__main__':
         "pRr": 0.09,
         "ptmax": 25e-1
     }
-    NUM_STEPS = 200
+    NUM_STEPS = 100
     # rainfall_scenario = pluviogram(NUM_STEPS)
-    rainfall_scenario = [1.5] * NUM_STEPS*2
+    rainfall_scenario = [5.0] * NUM_STEPS*128
     
     model = SCAVATUModel(
         width=WIDTH,
